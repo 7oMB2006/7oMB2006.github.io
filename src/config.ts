@@ -88,6 +88,11 @@ export const profileConfig: ProfileConfig = {
 			icon: "fa6-brands:github",
 			url: "https://github.com/7oMB2006",
 		},
+		{
+			name: "网易云音乐",
+			icon: "simple-icons:neteasecloudmusic",
+			url: "https://music.163.com/#/user/home?id=3340117172",
+		},
 	],
 };
 
