@@ -27,7 +27,15 @@ const rows = [
             <text x="56" y="74" class="focus-heading">当前精力投入</text>
             <text x="56" y="111" class="focus-subheading">CURRENT FOCUS · 50 格 = 100%</text>
             <line x1="56" y1="132" x2="1144" y2="132" class="focus-divider" />
-            <text x="1108" y="107" class="focus-coffee" text-anchor="middle">☕</text>
+            <image
+                class="focus-coffee-sticker"
+                href="/images/coffee-sticker.png"
+                x="1038"
+                y="5"
+                width="75"
+                height="126"
+                preserveAspectRatio="xMidYMid meet"
+            />
 
             {rows.map((row, rowIndex) => {
                 const y = 163 + rowIndex * 74;
@@ -92,8 +100,7 @@ const rows = [
     }
 
     .focus-subheading,
-    .focus-value,
-    .focus-coffee {
+    .focus-value {
         font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
     }
 
@@ -117,8 +124,8 @@ const rows = [
         font-weight: 600;
     }
 
-    .focus-coffee {
-        font-size: 42px;
+    .focus-coffee-sticker {
+        pointer-events: none;
     }
 
     .focus-cell {
