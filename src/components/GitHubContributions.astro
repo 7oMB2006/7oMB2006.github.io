@@ -1,28 +1,201 @@
 ---
 const username = "7oMB2006";
-const chartUrl = "https://ghchart.rshah.org/7oMB2006";
+const contributionsUrl = `https://github.com/users/${username}/contributions`;
+const monthNames = ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"];
+
+type ContributionCell = {
+    column: number;
+    row: number;
+    date: string;
+    level: number;
+};
+
+let githubHtml = "";
+
+try {
+    const response = await fetch(contributionsUrl, {
+        headers: { "user-agent": "Mozilla/5.0" },
+    });
+
+    if (response.ok) {
+        githubHtml = await response.text();
+    }
+} catch {
+    githubHtml = "";
+}
+
+const totalMatch = githubHtml.match(/<h2[^>]*>\s*([\d,]+)\s+contributions/i);
+const totalContributions = totalMatch?.[1] ?? "0";
+const cells: ContributionCell[] = [];
+const cellPattern = /<td(?=[^>]*\bid="contribution-day-component-(\d+)-(\d+)")(?=[^>]*\bdata-date="([^"]+)")(?=[^>]*\bdata-level="(\d+)")[^>]*>/g;
+
+for (const match of githubHtml.matchAll(cellPattern)) {
+    cells.push({
+        column: Number(match[2]),
+        row: Number(match[1]),
+        date: match[3],
+        level: Math.min(Number(match[4]), 4),
+    });
+}
+
+const columnCount = Math.max(53, ...cells.map((cell) => cell.column + 1));
+const cellSize = 12;
+const cellGap = 4;
+const chartLeft = 48;
+const chartTop = 34;
+const chartWidth = chartLeft + columnCount * (cellSize + cellGap) - cellGap;
+const chartHeight = 144;
+const legendWidth = 160;
+const svgWidth = Math.max(chartWidth, legendWidth + 12);
+const svgHeight = chartHeight + 18;
+
+const monthLabels = cells
+    .filter((cell) => cell.row === 0)
+    .reduce<{ month: number; column: number }[]>((labels, cell) => {
+        const month = Number(cell.date.slice(5, 7));
+        if (labels.at(-1)?.month !== month) {
+            labels.push({ month, column: cell.column });
+        }
+        return labels;
+    }, []);
+
+const renderedCells = cells.map((cell) => ({
+    ...cell,
+    x: chartLeft + cell.column * (cellSize + cellGap),
+    y: chartTop + cell.row * (cellSize + cellGap),
+}));
+
+const fallbackCells = cells.length > 0 ? renderedCells : Array.from({ length: columnCount * 7 }, (_, index) => ({
+    column: Math.floor(index / 7),
+    row: index % 7,
+    date: "",
+    level: 0,
+    x: chartLeft + Math.floor(index / 7) * (cellSize + cellGap),
+    y: chartTop + (index % 7) * (cellSize + cellGap),
+}));
 ---
 
-<section class="card-base rounded-[var(--radius-large)] px-6 md:px-9 py-6 mb-6 onload-animation">
+<section class="github-contributions card-base rounded-[var(--radius-large)] px-6 py-6 md:px-9 mb-6 onload-animation">
     <div class="flex items-center justify-between gap-4 mb-5">
-        <h2 class="transition text-xl font-bold text-black/90 dark:text-white/90">GitHub Contributions</h2>
+        <h2 class="transition text-xl font-bold text-black/90 dark:text-white/90">GitHub 贡献</h2>
         <a
-            class="transition link text-sm font-medium"
-            href="https://github.com/7oMB2006"
+            class="github-username transition text-sm font-medium"
+            href={`https://github.com/${username}`}
             target="_blank"
             rel="noopener noreferrer"
         >
             @{username}
         </a>
     </div>
+
     <div class="overflow-x-auto rounded-xl bg-white/70 dark:bg-black/20 px-3 py-4">
-        <img
-            src={chartUrl}
-            alt="7oMB2006 的 GitHub 贡献记录"
-            loading="lazy"
-            width="663"
-            height="104"
-            class="block min-w-[663px] w-full max-w-none"
-        />
+        <svg
+            class="block h-auto w-full min-w-[760px] text-black/55 dark:text-white/65"
+            viewBox={`0 0 ${svgWidth} ${svgHeight}`}
+            role="img"
+            aria-labelledby="github-contributions-title github-contributions-description"
+        >
+            <title id="github-contributions-title">过去一年 GitHub 贡献记录</title>
+            <desc id="github-contributions-description">{totalContributions} 次贡献，按日期和贡献程度展示</desc>
+
+            <text x="0" y="15" class="chart-title">在过去的一年中贡献 {totalContributions} 次</text>
+
+            {monthLabels.map(({ month, column }) => (
+                <text x={chartLeft + column * (cellSize + cellGap)} y="28" class="month-label">
+                    {monthNames[month - 1]}
+                </text>
+            ))}
+
+            <text x="0" y={chartTop + cellSize + 1} class="weekday-label">周一</text>
+            <text x="0" y={chartTop + 3 * (cellSize + cellGap) + cellSize + 1} class="weekday-label">周三</text>
+            <text x="0" y={chartTop + 5 * (cellSize + cellGap) + cellSize + 1} class="weekday-label">周五</text>
+
+            {fallbackCells.map(({ x, y, level, date }) => (
+                <rect
+                    x={x}
+                    y={y}
+                    width={cellSize}
+                    height={cellSize}
+                    rx="3"
+                    class={`contribution-level-${level}`}
+                    aria-label={date ? `${date}，贡献程度 ${level}` : undefined}
+                />
+            ))}
+
+            <g transform={`translate(${svgWidth - legendWidth} ${chartHeight + 3})`} class="legend">
+                <text x="0" y="10">较少</text>
+                {[0, 1, 2, 3, 4].map((level, index) => (
+                    <rect
+                        x={30 + index * (cellSize + cellGap)}
+                        y="0"
+                        width={cellSize}
+                        height={cellSize}
+                        rx="3"
+                        class={`contribution-level-${level}`}
+                    />
+                ))}
+                <text x="112" y="10">更多</text>
+            </g>
+        </svg>
     </div>
 </section>
+
+<style>
+    .github-contributions {
+        --contribution-level-0: #ebedf0;
+        --contribution-level-1: #9be9a8;
+        --contribution-level-2: #40c463;
+        --contribution-level-3: #30a14e;
+        --contribution-level-4: #216e39;
+    }
+
+    :global(.dark) .github-contributions {
+        --contribution-level-0: #161b22;
+        --contribution-level-1: #0e4429;
+        --contribution-level-2: #006d32;
+        --contribution-level-3: #26a641;
+        --contribution-level-4: #39d353;
+    }
+
+    .github-username {
+        color: var(--primary);
+    }
+
+    .github-username:hover {
+        color: var(--primary);
+        opacity: 0.8;
+    }
+
+    .chart-title {
+        fill: currentColor;
+        font-size: 16px;
+        font-weight: 600;
+    }
+
+    .month-label,
+    .weekday-label,
+    .legend text {
+        fill: currentColor;
+        font-size: 11px;
+    }
+
+    .contribution-level-0 {
+        fill: var(--contribution-level-0);
+    }
+
+    .contribution-level-1 {
+        fill: var(--contribution-level-1);
+    }
+
+    .contribution-level-2 {
+        fill: var(--contribution-level-2);
+    }
+
+    .contribution-level-3 {
+        fill: var(--contribution-level-3);
+    }
+
+    .contribution-level-4 {
+        fill: var(--contribution-level-4);
+    }
+</style>
