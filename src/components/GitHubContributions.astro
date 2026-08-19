@@ -1,6 +1,7 @@
 ---
+import { githubContributionRows, githubContributionStartDate, githubContributionTotal } from "../data/githubContributions";
+
 const username = "7oMB2006";
-const contributionsUrl = `https://github.com/users/${username}/contributions`;
 const monthNames = ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"];
 
 type ContributionCell = {
@@ -10,35 +11,22 @@ type ContributionCell = {
     level: number;
 };
 
-let githubHtml = "";
+const toDateString = (offset: number) => {
+    const date = new Date(`${githubContributionStartDate}T00:00:00Z`);
+    date.setUTCDate(date.getUTCDate() + offset);
+    return date.toISOString().slice(0, 10);
+};
 
-try {
-    const response = await fetch(contributionsUrl, {
-        headers: { "user-agent": "Mozilla/5.0" },
-    });
-
-    if (response.ok) {
-        githubHtml = await response.text();
-    }
-} catch {
-    githubHtml = "";
-}
-
-const totalMatch = githubHtml.match(/<h2[^>]*>\s*([\d,]+)\s+contributions/i);
-const totalContributions = totalMatch?.[1] ?? "0";
-const cells: ContributionCell[] = [];
-const cellPattern = /<td(?=[^>]*\bid="contribution-day-component-(\d+)-(\d+)")(?=[^>]*\bdata-date="([^"]+)")(?=[^>]*\bdata-level="(\d+)")[^>]*>/g;
-
-for (const match of githubHtml.matchAll(cellPattern)) {
-    cells.push({
-        column: Number(match[2]),
-        row: Number(match[1]),
-        date: match[3],
-        level: Math.min(Number(match[4]), 4),
-    });
-}
-
-const columnCount = Math.max(53, ...cells.map((cell) => cell.column + 1));
+const totalContributions = githubContributionTotal.toLocaleString("en-US");
+const columnCount = githubContributionRows[0].length;
+const cells: ContributionCell[] = githubContributionRows.flatMap((row, rowIndex) =>
+    [...row].map((level, column) => ({
+        column,
+        row: rowIndex,
+        date: toDateString(column * 7 + rowIndex),
+        level: Number(level),
+    })),
+);
 const cellSize = 12;
 const cellGap = 4;
 const chartLeft = 48;
@@ -63,15 +51,6 @@ const renderedCells = cells.map((cell) => ({
     ...cell,
     x: chartLeft + cell.column * (cellSize + cellGap),
     y: chartTop + cell.row * (cellSize + cellGap),
-}));
-
-const fallbackCells = cells.length > 0 ? renderedCells : Array.from({ length: columnCount * 7 }, (_, index) => ({
-    column: Math.floor(index / 7),
-    row: index % 7,
-    date: "",
-    level: 0,
-    x: chartLeft + Math.floor(index / 7) * (cellSize + cellGap),
-    y: chartTop + (index % 7) * (cellSize + cellGap),
 }));
 ---
 
@@ -110,7 +89,7 @@ const fallbackCells = cells.length > 0 ? renderedCells : Array.from({ length: co
             <text x="0" y={chartTop + 3 * (cellSize + cellGap) + cellSize + 1} class="weekday-label">周三</text>
             <text x="0" y={chartTop + 5 * (cellSize + cellGap) + cellSize + 1} class="weekday-label">周五</text>
 
-            {fallbackCells.map(({ x, y, level, date }) => (
+            {renderedCells.map(({ x, y, level, date }) => (
                 <rect
                     x={x}
                     y={y}

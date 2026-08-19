@@ -1,0 +1,230 @@
+---
+import { lifeKlineData } from "../data/lifeKline";
+
+const width = 1200;
+const height = 420;
+const left = 42;
+const right = 42;
+const top = 42;
+const bottom = 58;
+const axisY = height - bottom + 10;
+const plotWidth = width - left - right;
+const low = Math.min(...lifeKlineData.map((day) => day.low));
+const high = Math.max(...lifeKlineData.map((day) => day.high));
+const padding = Math.max((high - low) * 0.08, 1);
+const minimum = low - padding;
+const maximum = high + padding;
+const bodyWidth = Math.max(4, Math.min(10, (plotWidth / lifeKlineData.length) * 0.58));
+
+const xPosition = (index: number) => {
+    if (lifeKlineData.length <= 1) return width / 2;
+    return left + (index / (lifeKlineData.length - 1)) * plotWidth;
+};
+
+const yPosition = (value: number) => top + ((maximum - value) / (maximum - minimum)) * (height - top - bottom);
+const formatValue = (value: number) => (Number.isInteger(value) ? String(value) : value.toFixed(1));
+const tickCount = Math.min(6, lifeKlineData.length);
+const tickIndexes = Array.from({ length: tickCount }, (_, index) =>
+    Math.round((index * (lifeKlineData.length - 1)) / Math.max(tickCount - 1, 1)),
+);
+const highIndex = lifeKlineData.reduce((best, day, index, data) => (day.high > data[best].high ? index : best), 0);
+const lowIndex = lifeKlineData.reduce((best, day, index, data) => (day.low < data[best].low ? index : best), 0);
+
+const annotations = [
+    { label: "前高", index: highIndex, value: lifeKlineData[highIndex].high, isHigh: true },
+    { label: "前低", index: lowIndex, value: lifeKlineData[lowIndex].low, isHigh: false },
+].map((annotation) => {
+    const x = xPosition(annotation.index);
+    const y = yPosition(annotation.value);
+    const direction = annotation.isHigh ? -1 : 1;
+    const verticalEnd = y + direction * 14;
+    const useLeft = x > width * 0.62;
+    const horizontalEnd = useLeft ? x - 66 : x + 66;
+    const anchor = useLeft ? "end" : "start";
+    const textX = useLeft ? horizontalEnd - 6 : horizontalEnd + 6;
+    const textY = annotation.isHigh
+        ? Math.max(verticalEnd - 5, top + 16)
+        : Math.min(verticalEnd + 16, height - bottom - 9);
+
+    return {
+        ...annotation,
+        path: `M ${x.toFixed(2)} ${y.toFixed(2)} V ${verticalEnd.toFixed(2)} H ${horizontalEnd.toFixed(2)}`,
+        textX,
+        textY,
+        anchor,
+        text: `${annotation.label} ${formatValue(annotation.value)}`,
+    };
+});
+---
+
+<section class="life-kline card-base rounded-[var(--radius-large)] px-6 py-6 md:px-9 mb-6 onload-animation">
+    <div class="flex items-center justify-between gap-4 mb-5">
+        <h2 class="transition text-xl font-bold text-black/90 dark:text-white/90">人生k线</h2>
+        <span class="kline-period text-xs">73 个观测日</span>
+    </div>
+
+    <div class="overflow-x-auto rounded-xl">
+        <svg
+            class="kline-chart block h-auto w-full min-w-[760px]"
+            viewBox={`0 0 ${width} ${height}`}
+            role="img"
+            aria-labelledby="life-kline-title life-kline-description"
+        >
+            <title id="life-kline-title">人生 K 线</title>
+            <desc id="life-kline-description">用 OHLC 形式记录近期人生状态的模拟 K 线图，包含前高和前低标记。</desc>
+            <rect class="kline-background" width={width} height={height} rx="18" />
+
+            <text x={width / 2} y="166" class="kline-watermark-title" text-anchor="middle">
+                WHAT IF LIFE COULD BE QUANTIFIED WITH <tspan font-style="italic">OHLC</tspan>?
+            </text>
+            <text x={width / 2} y="199" class="kline-watermark-subtitle" text-anchor="middle">
+                如果人生可以用 OHLC 量化，那会是什么样子呢……
+            </text>
+
+            <line x1={left} y1={axisY} x2={width - right} y2={axisY} class="kline-axis" />
+
+            {lifeKlineData.map((day, index) => {
+                const x = xPosition(index);
+                const yHigh = yPosition(day.high);
+                const yLow = yPosition(day.low);
+                const yOpen = yPosition(day.open);
+                const yClose = yPosition(day.close);
+                const bodyTop = Math.min(yOpen, yClose);
+                const bodyHeight = Math.max(Math.abs(yOpen - yClose), 3);
+                const directionClass = day.close >= day.open ? "kline-up" : "kline-down";
+
+                return (
+                    <g>
+                        <line x1={x} y1={yHigh} x2={x} y2={yLow} class:list={["kline-wick", directionClass]} />
+                        <rect
+                            x={x - bodyWidth / 2}
+                            y={bodyTop}
+                            width={bodyWidth}
+                            height={bodyHeight}
+                            rx="2"
+                            class:list={["kline-body", directionClass]}
+                        />
+                    </g>
+                );
+            })}
+
+            {tickIndexes.map((index) => {
+                const x = xPosition(index);
+                return (
+                    <g>
+                        <line x1={x} y1={axisY} x2={x} y2={axisY + 5} class="kline-axis" />
+                        <text x={x} y={axisY + 25} class="kline-date" text-anchor="middle">
+                            {lifeKlineData[index].date.slice(5).replace("-", "/")}
+                        </text>
+                    </g>
+                );
+            })}
+
+            {annotations.map((annotation) => (
+                <g>
+                    <path d={annotation.path} class="kline-annotation-line" />
+                    <text x={annotation.textX} y={annotation.textY} class="kline-annotation-text" text-anchor={annotation.anchor}>
+                        {annotation.text}
+                    </text>
+                </g>
+            ))}
+        </svg>
+    </div>
+</section>
+
+<style>
+    .life-kline {
+        --kline-background: oklch(0.985 0.006 var(--hue));
+        --kline-border: oklch(0.88 0.02 var(--hue));
+        --kline-axis: oklch(0.78 0.02 var(--hue));
+        --kline-muted: oklch(0.48 0.025 var(--hue));
+        --kline-watermark: oklch(0.35 0.02 var(--hue));
+    }
+
+    :global(.dark) .life-kline {
+        --kline-background: #0d1117;
+        --kline-border: #30363d;
+        --kline-axis: #30363d;
+        --kline-muted: #8b949e;
+        --kline-watermark: #e6edf3;
+    }
+
+    .kline-period,
+    .kline-date,
+    .kline-annotation-text {
+        fill: var(--kline-muted);
+        color: var(--kline-muted);
+        font-family: ui-monospace, Consolas, monospace;
+    }
+
+    .kline-period {
+        opacity: 0.8;
+    }
+
+    .kline-background {
+        fill: var(--kline-background);
+        stroke: var(--kline-border);
+        stroke-width: 2;
+    }
+
+    .kline-watermark-title,
+    .kline-watermark-subtitle {
+        fill: var(--kline-watermark);
+        pointer-events: none;
+    }
+
+    .kline-watermark-title {
+        opacity: 0.13;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 31px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+    }
+
+    .kline-watermark-subtitle {
+        opacity: 0.08;
+        font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+        font-size: 17px;
+    }
+
+    .kline-axis,
+    .kline-annotation-line {
+        fill: none;
+        stroke: var(--kline-axis);
+        stroke-width: 1;
+    }
+
+    .kline-annotation-line {
+        stroke: var(--kline-muted);
+        stroke-linecap: round;
+        stroke-width: 1.25;
+    }
+
+    .kline-date,
+    .kline-annotation-text {
+        font-size: 12px;
+    }
+
+    .kline-annotation-text {
+        font-size: 13px;
+    }
+
+    .kline-wick {
+        stroke-width: 2;
+        stroke-linecap: round;
+    }
+
+    .kline-body {
+        stroke: none;
+    }
+
+    .kline-up {
+        stroke: #e85b55;
+        fill: #e85b55;
+    }
+
+    .kline-down {
+        stroke: #67c49a;
+        fill: #67c49a;
+    }
+</style>

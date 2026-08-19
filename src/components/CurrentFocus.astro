@@ -1,0 +1,139 @@
+---
+const barCount = 50;
+const cellWidth = 14;
+const cellGap = 3;
+const barStart = 342;
+const rows = [
+    { label: "基于 AI 的金融量化", value: 60, color: "focus-red" },
+    { label: "AI Agent", value: 38, color: "focus-coral" },
+    { label: "AI 绘画", value: 2, color: "focus-mint" },
+];
+---
+
+<section class="focus-card card-base rounded-[var(--radius-large)] p-3 md:p-4 mb-6 onload-animation">
+    <h2 class="sr-only">当前精力投入</h2>
+    <div class="overflow-x-auto rounded-[calc(var(--radius-large)-0.25rem)]">
+        <svg
+            class="focus-chart block h-auto w-full min-w-[760px]"
+            viewBox="0 0 1200 430"
+            role="img"
+            aria-labelledby="focus-title focus-description"
+        >
+            <title id="focus-title">当前精力投入</title>
+            <desc id="focus-description">基于 AI 的金融量化占 60%，AI Agent 占 38%，AI 绘画占 2%。</desc>
+
+            <rect class="chart-bg" width="1200" height="430" rx="18" />
+            <rect class="chart-border" x="1" y="1" width="1198" height="428" rx="17" />
+            <text x="56" y="74" class="focus-heading">当前精力投入</text>
+            <text x="56" y="111" class="focus-subheading">CURRENT FOCUS · 50 格 = 100%</text>
+            <line x1="56" y1="132" x2="1144" y2="132" class="focus-divider" />
+            <text x="1108" y="107" class="focus-coffee" text-anchor="middle">☕</text>
+
+            {rows.map((row, rowIndex) => {
+                const y = 163 + rowIndex * 74;
+                const filledCells = Math.round((row.value / 100) * barCount);
+                return (
+                    <g>
+                        <text x="56" y={y + 18} class="focus-label">{row.label}</text>
+                        {Array.from({ length: barCount }, (_, index) => (
+                            <rect
+                                x={barStart + index * (cellWidth + cellGap)}
+                                y={y}
+                                width={cellWidth}
+                                height="30"
+                                rx="5"
+                                class:list={["focus-cell", index < filledCells && row.color]}
+                            />
+                        ))}
+                        <text x="1144" y={y + 20} class:list={["focus-value", row.color]} text-anchor="end">{row.value}%</text>
+                    </g>
+                );
+            })}
+        </svg>
+    </div>
+</section>
+
+<style>
+    .focus-card {
+        --focus-bg: oklch(0.985 0.006 var(--hue));
+        --focus-border: oklch(0.88 0.02 var(--hue));
+        --focus-ink: oklch(0.28 0.02 var(--hue));
+        --focus-muted: oklch(0.48 0.025 var(--hue));
+        --focus-empty: oklch(0.91 0.018 var(--hue));
+    }
+
+    :global(.dark) .focus-card {
+        --focus-bg: #0d1117;
+        --focus-border: #30363d;
+        --focus-ink: #e6edf3;
+        --focus-muted: #8b949e;
+        --focus-empty: #202730;
+    }
+
+    .chart-bg {
+        fill: var(--focus-bg);
+    }
+
+    .chart-border {
+        fill: none;
+        stroke: var(--focus-border);
+        stroke-width: 2;
+    }
+
+    .focus-heading,
+    .focus-label {
+        fill: var(--focus-ink);
+        font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+    }
+
+    .focus-heading {
+        font-size: 32px;
+        font-weight: 700;
+    }
+
+    .focus-subheading,
+    .focus-value,
+    .focus-coffee {
+        font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+    }
+
+    .focus-subheading {
+        fill: var(--focus-muted);
+        font-size: 18px;
+    }
+
+    .focus-divider {
+        stroke: var(--focus-border);
+        stroke-width: 2;
+        stroke-linecap: round;
+    }
+
+    .focus-label {
+        font-size: 22px;
+    }
+
+    .focus-value {
+        font-size: 21px;
+        font-weight: 600;
+    }
+
+    .focus-coffee {
+        font-size: 42px;
+    }
+
+    .focus-cell {
+        fill: var(--focus-empty);
+    }
+
+    .focus-red {
+        fill: #d84b43;
+    }
+
+    .focus-coral {
+        fill: #e78378;
+    }
+
+    .focus-mint {
+        fill: #9ad3bd;
+    }
+</style>
