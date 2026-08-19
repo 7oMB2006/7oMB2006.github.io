@@ -1,8 +1,8 @@
 ---
 const barCount = 50;
-const cellWidth = 14;
-const cellGap = 3;
-const barStart = 342;
+const cellWidth = 11;
+const cellGap = 4;
+const barStart = 320;
 const rows = [
     { label: "基于 AI 的金融量化", value: 60, color: "focus-red" },
     { label: "AI Agent", value: 38, color: "focus-coral" },
@@ -40,8 +40,8 @@ const rows = [
                                 x={barStart + index * (cellWidth + cellGap)}
                                 y={y}
                                 width={cellWidth}
-                                height="30"
-                                rx="5"
+                                height="26"
+                                rx="4"
                                 class:list={["focus-cell", index < filledCells && row.color]}
                             />
                         ))}
