@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from "astro:content";
+import { getFirstImageFromPost } from "@utils/content-utils";
 import { getPostUrlBySlug } from "@utils/url-utils";
 import PostCard from "./PostCard.astro";
 
@@ -18,7 +19,7 @@ const interval = 50;
                 published={entry.data.published}
                 updated={entry.data.updated}
                 url={getPostUrlBySlug(entry.slug)}
-                image={entry.data.image}
+                image={entry.data.image || getFirstImageFromPost(entry)}
                 description={entry.data.description}
                 draft={entry.data.draft}
                 class:list="onload-animation"

@@ -1,0 +1,413 @@
+---
+import ImageWrapper from "./misc/ImageWrapper.astro";
+import { siteConfig } from "../config";
+
+const secondFloorWallpapers = [
+    {
+        name: "房间",
+        src: siteConfig.banner.src,
+        alt: "房间壁纸",
+        position: siteConfig.banner.position,
+    },
+    {
+        name: "楼梯",
+        src: "/images/second-floor/stairs.png",
+        alt: "楼梯壁纸",
+        position: "center",
+    },
+    {
+        name: "林荫",
+        src: "/images/second-floor/grove.png",
+        alt: "林荫壁纸",
+        position: "center",
+    },
+];
+---
+
+<div id="second-floor-ui" aria-live="polite">
+    <div id="second-floor-prompt" role="status">要继续滚动吗？</div>
+
+    <div id="second-floor-entry-tip" role="status" aria-live="polite">
+        <span>点击切换</span>
+        <span>下滑退出</span>
+    </div>
+
+    <section id="second-floor" aria-label="二楼壁纸" aria-hidden="true">
+        <div id="second-floor-wallpapers">
+            {secondFloorWallpapers.map((wallpaper, index) => (
+                <div
+                    class:list={["second-floor-wallpaper", { "is-active": index === 0 }]}
+                    data-second-floor-wallpaper
+                    data-wallpaper-name={wallpaper.name}
+                >
+                    <ImageWrapper
+                        class="second-floor-wallpaper-image"
+                        src={wallpaper.src}
+                        alt={wallpaper.alt}
+                        position={wallpaper.position}
+                    />
+                </div>
+            ))}
+        </div>
+        <div class="second-floor-shade"></div>
+        <div class="second-floor-caption">
+            <span id="second-floor-title" class="second-floor-title">房间</span>
+        </div>
+    </section>
+</div>
+
+<style is:global>
+    #second-floor-ui {
+        position: relative;
+        z-index: 9999;
+        pointer-events: none;
+    }
+
+    #second-floor-prompt {
+        position: fixed;
+        z-index: 10000;
+        top: clamp(5.5rem, 12vh, 8rem);
+        left: 50%;
+        padding: 0.55rem 0.9rem;
+        border: 1px solid color-mix(in srgb, white 18%, transparent);
+        border-radius: 999px;
+        background: color-mix(in srgb, black 45%, transparent);
+        color: rgb(255 255 255 / 0.9);
+        font-size: 0.8rem;
+        letter-spacing: 0.04em;
+        opacity: 0;
+        transform: translate(-50%, -0.5rem);
+        transition: opacity 220ms ease, transform 220ms ease;
+        pointer-events: none;
+        backdrop-filter: blur(10px);
+    }
+
+    body.second-floor-armed #second-floor-prompt {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+
+    #second-floor {
+        position: fixed;
+        z-index: 10000;
+        inset: 0;
+        overflow: hidden;
+        visibility: hidden;
+        opacity: 0;
+        transform: translateY(1.25rem) scale(1.015);
+        background: #101010;
+        transition: opacity 420ms ease, transform 520ms cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 520ms;
+        pointer-events: none;
+    }
+
+    body.second-floor-open #second-floor {
+        visibility: visible;
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        transition-delay: 0s;
+        pointer-events: auto;
+    }
+
+    #second-floor-entry-tip {
+        position: fixed;
+        z-index: 10001;
+        left: 50%;
+        bottom: clamp(1.5rem, 4vh, 3.5rem);
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.55rem 0.9rem;
+        border: 1px solid color-mix(in srgb, white 18%, transparent);
+        border-radius: 999px;
+        background: color-mix(in srgb, black 45%, transparent);
+        color: rgb(255 255 255 / 0.9);
+        font-size: 0.8rem;
+        letter-spacing: 0.04em;
+        opacity: 0;
+        visibility: hidden;
+        transform: translate(-50%, 0.75rem);
+        transition: opacity 260ms ease, transform 360ms ease, visibility 0s linear 360ms;
+        pointer-events: none;
+        backdrop-filter: blur(10px);
+        user-select: none;
+    }
+
+    #second-floor-entry-tip span + span::before {
+        content: "·";
+        margin-right: 0.75rem;
+        color: rgb(255 255 255 / 0.45);
+    }
+
+    body.second-floor-entry-tip-active #second-floor-entry-tip {
+        opacity: 1;
+        visibility: visible;
+        transform: translate(-50%, 0);
+        transition-delay: 0s;
+    }
+    #second-floor-wallpapers,
+    .second-floor-wallpaper,
+    .second-floor-wallpaper-image {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    .second-floor-wallpaper {
+        opacity: 0;
+        transition: opacity 420ms ease;
+        pointer-events: none;
+    }
+
+    .second-floor-wallpaper.is-active {
+        opacity: 1;
+    }
+
+    .second-floor-shade {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, rgb(0 0 0 / 0.16), transparent 40%, rgb(0 0 0 / 0.3));
+        pointer-events: none;
+    }
+
+    .second-floor-caption {
+        position: absolute;
+        top: clamp(1.5rem, 4vw, 3.5rem);
+        left: clamp(1.5rem, 4vw, 4rem);
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        color: rgb(255 255 255 / 0.9);
+        text-align: left;
+        text-shadow: 0 2px 16px rgb(0 0 0 / 0.45);
+        user-select: none;
+    }
+
+    .second-floor-title {
+        font-size: clamp(1.25rem, 2.5vw, 2rem);
+        font-weight: 700;
+        letter-spacing: 0.12em;
+    }
+
+
+    body.second-floor-open > :not(#second-floor-ui),
+    body.second-floor-open .os-content > :not(#second-floor-ui) {
+        visibility: hidden;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    body.second-floor-open {
+        overscroll-behavior: none;
+    }
+
+    body.second-floor-bounce #second-floor-prompt {
+        animation: second-floor-prompt-bounce 360ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    @keyframes second-floor-prompt-bounce {
+        0% {
+            transform: translate(-50%, -0.5rem);
+        }
+        42% {
+            transform: translate(-50%, 0.3rem);
+        }
+        100% {
+            transform: translate(-50%, 0);
+        }
+    }
+
+    @media (max-width: 1023px) {
+        #second-floor-ui {
+            display: none;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        #second-floor,
+        #second-floor-prompt {
+            transition-duration: 1ms;
+        }
+
+        body.second-floor-bounce #second-floor-prompt {
+            animation: none;
+        }
+    }
+</style>
+
+<script>
+    type FloorState = "idle" | "armed" | "opening" | "open" | "closing";
+
+    const ARM_WINDOW = 1200;
+    const WHEEL_GESTURE_GAP = 180;
+    const BOUNCE_DURATION = 360;
+    const CLOSE_DURATION = 520;
+
+    const isDesktop = () => window.matchMedia("(min-width: 1024px)").matches;
+    const isHome = () => document.body.classList.contains("lg:is-home");
+    const getScrollTop = () => {
+        const viewport = document.querySelector<HTMLElement>(".os-viewport");
+        return Math.max(
+            document.body.scrollTop,
+            document.documentElement.scrollTop,
+            viewport?.scrollTop ?? 0,
+        );
+    };
+    const wallpaperElements = Array.from(
+        document.querySelectorAll<HTMLElement>("[data-second-floor-wallpaper]"),
+    );
+    const wallpaperTitle = document.getElementById("second-floor-title");
+    let wallpaperIndex = 0;
+
+    const setWallpaper = (index: number) => {
+        if (wallpaperElements.length === 0) return;
+
+        wallpaperIndex = (index + wallpaperElements.length) % wallpaperElements.length;
+        wallpaperElements.forEach((element, elementIndex) => {
+            element.classList.toggle("is-active", elementIndex === wallpaperIndex);
+        });
+
+        const currentWallpaper = wallpaperElements[wallpaperIndex];
+        if (wallpaperTitle && currentWallpaper) {
+            wallpaperTitle.textContent = currentWallpaper.dataset.wallpaperName || "";
+        }
+    };
+
+    const cycleWallpaper = () => {
+        setWallpaper(wallpaperIndex + 1);
+    };
+
+    document.getElementById("second-floor")?.addEventListener("click", cycleWallpaper);
+
+    let state: FloorState = "idle";
+    let armedAt = 0;
+    let lastWheelAt = 0;
+    let armTimer: number | undefined;
+    let bounceTimer: number | undefined;
+    let closeTimer: number | undefined;
+    let entryTipTimer: number | undefined;
+
+    const clearTimers = () => {
+        if (armTimer) window.clearTimeout(armTimer);
+        if (bounceTimer) window.clearTimeout(bounceTimer);
+        if (closeTimer) window.clearTimeout(closeTimer);
+        if (entryTipTimer) window.clearTimeout(entryTipTimer);
+        armTimer = undefined;
+        bounceTimer = undefined;
+        closeTimer = undefined;
+        entryTipTimer = undefined;
+    };
+
+    const clearFloorClasses = () => {
+        document.body.classList.remove("second-floor-armed", "second-floor-open", "second-floor-bounce", "second-floor-entry-tip-active");
+        document.getElementById("second-floor")?.setAttribute("aria-hidden", "true");
+    };
+
+    const reset = () => {
+        clearTimers();
+        state = "idle";
+        armedAt = 0;
+        lastWheelAt = 0;
+        clearFloorClasses();
+    };
+
+    const arm = () => {
+        state = "armed";
+        armedAt = performance.now();
+        document.body.classList.add("second-floor-armed", "second-floor-bounce");
+
+        bounceTimer = window.setTimeout(() => {
+            document.body.classList.remove("second-floor-bounce");
+        }, BOUNCE_DURATION);
+
+        armTimer = window.setTimeout(() => {
+            if (state === "armed") {
+                state = "idle";
+                document.body.classList.remove("second-floor-armed");
+            }
+        }, ARM_WINDOW);
+    };
+
+    const open = () => {
+        clearTimers();
+        state = "opening";
+        document.body.classList.remove("second-floor-armed", "second-floor-bounce");
+        document.body.classList.add("second-floor-open", "second-floor-entry-tip-active");
+        document.getElementById("second-floor")?.setAttribute("aria-hidden", "false");
+        entryTipTimer = window.setTimeout(() => {
+            document.body.classList.remove("second-floor-entry-tip-active");
+        }, 2400);
+
+        window.setTimeout(() => {
+            if (state === "opening") state = "open";
+        }, 30);
+    };
+
+    const close = () => {
+        if (state !== "open" && state !== "opening") return;
+
+        clearTimers();
+        state = "closing";
+        document.body.classList.remove("second-floor-open", "second-floor-entry-tip-active");
+        document.getElementById("second-floor")?.setAttribute("aria-hidden", "true");
+        closeTimer = window.setTimeout(() => {
+            if (state === "closing") state = "idle";
+        }, CLOSE_DURATION);
+    };
+
+    const handleWheel = (event: WheelEvent) => {
+        if (!isDesktop() || !isHome()) {
+            if (state !== "idle") reset();
+            return;
+        }
+
+        const now = performance.now();
+        const isNewGesture = now - lastWheelAt > WHEEL_GESTURE_GAP;
+        lastWheelAt = now;
+
+        if (state === "open" || state === "opening") {
+            if (event.deltaY > 8) {
+                event.preventDefault();
+                close();
+            }
+            return;
+        }
+
+        if (state === "closing") return;
+        if (getScrollTop() > 2 || event.deltaY >= -8 || !isNewGesture) {
+            if (getScrollTop() > 2 && state !== "idle") reset();
+            return;
+        }
+
+        event.preventDefault();
+
+        if (state === "armed" && now - armedAt <= ARM_WINDOW) {
+            open();
+        } else {
+            arm();
+        }
+    };
+
+    window.addEventListener("wheel", handleWheel, { capture: true, passive: false });
+    window.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") close();
+    });
+    window.addEventListener("scroll", () => {
+        if (state === "armed" && getScrollTop() > 2) reset();
+    }, { passive: true });
+
+    const bindSwupReset = () => {
+        if (!window.swup?.hooks) return;
+        window.swup.hooks.on("visit:start", reset);
+        window.swup.hooks.on("page:view", () => {
+            if (!isHome()) reset();
+        });
+    };
+
+    if (window.swup?.hooks) {
+        bindSwupReset();
+    } else {
+        document.addEventListener("swup:enable", bindSwupReset, { once: true });
+    }
+</script>
