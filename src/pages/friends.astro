@@ -1,0 +1,68 @@
+---
+import { Icon } from "astro-icon/components";
+import MainGridLayout from "../layouts/MainGridLayout.astro";
+
+const friends = [
+	{
+		name: "折叠",
+		signature: "世界正年轻",
+		tags: ["个人博客"],
+		url: "https://fffold.github.io/",
+		icon: "material-symbols:language",
+		image: "https://github.com/FFFold.png",
+	},
+	{
+		name: "Astro",
+		signature: "The web framework for content-driven websites. ⭐ Star to support our work!",
+		tags: ["本博客所使用的开发框架"],
+		url: "https://github.com/withastro/astro",
+		icon: "material-symbols:rocket-launch",
+		image: "https://avatars.githubusercontent.com/u/44914786?s=128",
+	},
+	{
+		name: "Fuwari - Demo Site",
+		signature: "✨ A static blog template built with Astro.",
+		tags: ["本博客所使用的博客模板"],
+		url: "https://fuwari.vercel.app/",
+		icon: "fa6-brands:github",
+		image: "https://fuwari.vercel.app/_astro/demo-avatar.CxcI0ivM_1nbuVe.webp",
+	},
+];
+---
+
+<MainGridLayout title="友链" description="7oMB 的友情链接">
+	<div class="card-base p-6 md:p-8">
+		<div class="mb-6">
+			<h1 class="text-2xl font-bold transition dark:text-neutral-50">友情链接</h1>
+		</div>
+		<div class="grid gap-3 md:grid-cols-2">
+			{friends.map((friend) => (
+				<a
+					href={friend.url}
+					target="_blank"
+					rel="noopener noreferrer"
+					class="group flex min-h-24 items-center gap-4 rounded-xl bg-[var(--btn-regular-bg)] p-4 transition hover:bg-[var(--btn-regular-bg-hover)] active:scale-[0.99]"
+				>
+					<span class="relative flex h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-[var(--card-bg)] text-[var(--primary)]">
+						<img
+							src={friend.image}
+							alt={`${friend.name} 的头像`}
+							loading="lazy"
+							class="h-full w-full object-cover"
+						/>
+					</span>
+					<span class="min-w-0 flex-1">
+						<strong class="block truncate text-lg font-bold text-neutral-900 transition dark:text-neutral-50 group-hover:text-[var(--primary)]">{friend.name}</strong>
+						<span class="mt-1 line-clamp-2 break-words text-sm text-neutral-500 dark:text-neutral-400">{friend.signature}</span>
+						<span class="mt-2 flex flex-wrap gap-1.5">
+							{friend.tags.map((tag) => (
+								<span class="rounded-md bg-[var(--card-bg)] px-2 py-0.5 text-xs text-neutral-500 dark:text-neutral-400">{tag}</span>
+							))}
+						</span>
+					</span>
+					<Icon name="fa6-solid:arrow-up-right-from-square" class="ml-auto shrink-0 text-sm text-neutral-400" />
+				</a>
+			))}
+		</div>
+	</div>
+</MainGridLayout>

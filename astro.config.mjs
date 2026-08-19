@@ -29,6 +29,7 @@ export default defineConfig({
 	site: "https://7oMB2006.github.io/",
 	base: "/",
 	trailingSlash: "always",
+	devToolbar: { enabled: false },
 	integrations: [
 		tailwind({
 			nesting: true,
@@ -53,6 +54,7 @@ export default defineConfig({
 				"fa6-brands": ["*"],
 				"fa6-regular": ["*"],
 				"fa6-solid": ["*"],
+				"material-symbols": ["*"],
 			},
 		}),
 		expressiveCode({
