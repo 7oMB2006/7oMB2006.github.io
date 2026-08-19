@@ -1,0 +1,28 @@
+---
+const username = "7oMB2006";
+const chartUrl = "https://ghchart.rshah.org/7oMB2006";
+---
+
+<section class="card-base rounded-[var(--radius-large)] px-6 md:px-9 py-6 mb-6 onload-animation">
+    <div class="flex items-center justify-between gap-4 mb-5">
+        <h2 class="transition text-xl font-bold text-black/90 dark:text-white/90">GitHub Contributions</h2>
+        <a
+            class="transition link text-sm font-medium"
+            href="https://github.com/7oMB2006"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+            @{username}
+        </a>
+    </div>
+    <div class="overflow-x-auto rounded-xl bg-white/70 dark:bg-black/20 px-3 py-4">
+        <img
+            src={chartUrl}
+            alt="7oMB2006 的 GitHub 贡献记录"
+            loading="lazy"
+            width="663"
+            height="104"
+            class="block min-w-[663px] w-full max-w-none"
+        />
+    </div>
+</section>
