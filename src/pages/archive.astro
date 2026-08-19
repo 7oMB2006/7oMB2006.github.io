@@ -6,11 +6,11 @@ import MainGridLayout from "@layouts/MainGridLayout.astro";
 import { getSortedPostsList } from "../utils/content-utils";
 
 const sortedPostsList = (await getSortedPostsList()).map((post) => ({
-    ...post,
-    data: {
-        ...post.data,
-        category: post.data.category ?? undefined,
-    },
+	...post,
+	data: {
+		...post.data,
+		category: post.data.category ?? undefined,
+	},
 }));
 ---
 
