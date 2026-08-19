@@ -2,11 +2,11 @@ import { type CollectionEntry, getCollection } from "astro:content";
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
 import { getCategoryUrl } from "@utils/url-utils.ts";
-const firstImagePattern = /!\[[^\]]*\]\(\s*(?:<([^>]+)>|([^\s)]+))[^)]*\)|<img\b[^>]*\bsrc\s*=\s*["']([^"']+)["'][^>]*>/i;
 
-export function getFirstImageFromPost(
-	entry: CollectionEntry<"posts">,
-): string {
+const firstImagePattern =
+	/!\[[^\]]*\]\(\s*(?:<([^>]+)>|([^\s)]+))[^)]*\)|<img\b[^>]*\bsrc\s*=\s*["']([^"']+)["'][^>]*>/i;
+
+export function getFirstImageFromPost(entry: CollectionEntry<"posts">): string {
 	const match = entry.body.match(firstImagePattern);
 	return match?.[1] || match?.[2] || match?.[3] || "";
 }

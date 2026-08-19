@@ -14,46 +14,67 @@ const high = Math.max(...lifeKlineData.map((day) => day.high));
 const padding = Math.max((high - low) * 0.08, 1);
 const minimum = low - padding;
 const maximum = high + padding;
-const bodyWidth = Math.max(4, Math.min(10, (plotWidth / lifeKlineData.length) * 0.58));
+const bodyWidth = Math.max(
+	4,
+	Math.min(10, (plotWidth / lifeKlineData.length) * 0.58),
+);
 
 const xPosition = (index: number) => {
-    if (lifeKlineData.length <= 1) return width / 2;
-    return left + (index / (lifeKlineData.length - 1)) * plotWidth;
+	if (lifeKlineData.length <= 1) return width / 2;
+	return left + (index / (lifeKlineData.length - 1)) * plotWidth;
 };
 
-const yPosition = (value: number) => top + ((maximum - value) / (maximum - minimum)) * (height - top - bottom);
-const formatValue = (value: number) => (Number.isInteger(value) ? String(value) : value.toFixed(1));
+const yPosition = (value: number) =>
+	top + ((maximum - value) / (maximum - minimum)) * (height - top - bottom);
+const formatValue = (value: number) =>
+	Number.isInteger(value) ? String(value) : value.toFixed(1);
 const tickCount = Math.min(6, lifeKlineData.length);
 const tickIndexes = Array.from({ length: tickCount }, (_, index) =>
-    Math.round((index * (lifeKlineData.length - 1)) / Math.max(tickCount - 1, 1)),
+	Math.round((index * (lifeKlineData.length - 1)) / Math.max(tickCount - 1, 1)),
 );
-const highIndex = lifeKlineData.reduce((best, day, index, data) => (day.high > data[best].high ? index : best), 0);
-const lowIndex = lifeKlineData.reduce((best, day, index, data) => (day.low < data[best].low ? index : best), 0);
+const highIndex = lifeKlineData.reduce(
+	(best, day, index, data) => (day.high > data[best].high ? index : best),
+	0,
+);
+const lowIndex = lifeKlineData.reduce(
+	(best, day, index, data) => (day.low < data[best].low ? index : best),
+	0,
+);
 
 const annotations = [
-    { label: "前高", index: highIndex, value: lifeKlineData[highIndex].high, isHigh: true },
-    { label: "前低", index: lowIndex, value: lifeKlineData[lowIndex].low, isHigh: false },
+	{
+		label: "前高",
+		index: highIndex,
+		value: lifeKlineData[highIndex].high,
+		isHigh: true,
+	},
+	{
+		label: "前低",
+		index: lowIndex,
+		value: lifeKlineData[lowIndex].low,
+		isHigh: false,
+	},
 ].map((annotation) => {
-    const x = xPosition(annotation.index);
-    const y = yPosition(annotation.value);
-    const direction = annotation.isHigh ? -1 : 1;
-    const verticalEnd = y + direction * 14;
-    const useLeft = x > width * 0.62;
-    const horizontalEnd = useLeft ? x - 66 : x + 66;
-    const anchor = useLeft ? "end" : "start";
-    const textX = useLeft ? horizontalEnd - 6 : horizontalEnd + 6;
-    const textY = annotation.isHigh
-        ? Math.max(verticalEnd - 5, top + 16)
-        : Math.min(verticalEnd + 16, height - bottom - 9);
+	const x = xPosition(annotation.index);
+	const y = yPosition(annotation.value);
+	const direction = annotation.isHigh ? -1 : 1;
+	const verticalEnd = y + direction * 14;
+	const useLeft = x > width * 0.62;
+	const horizontalEnd = useLeft ? x - 66 : x + 66;
+	const anchor = useLeft ? "end" : "start";
+	const textX = useLeft ? horizontalEnd - 6 : horizontalEnd + 6;
+	const textY = annotation.isHigh
+		? Math.max(verticalEnd - 5, top + 16)
+		: Math.min(verticalEnd + 16, height - bottom - 9);
 
-    return {
-        ...annotation,
-        path: `M ${x.toFixed(2)} ${y.toFixed(2)} V ${verticalEnd.toFixed(2)} H ${horizontalEnd.toFixed(2)}`,
-        textX,
-        textY,
-        anchor,
-        text: `${annotation.label} ${formatValue(annotation.value)}`,
-    };
+	return {
+		...annotation,
+		path: `M ${x.toFixed(2)} ${y.toFixed(2)} V ${verticalEnd.toFixed(2)} H ${horizontalEnd.toFixed(2)}`,
+		textX,
+		textY,
+		anchor,
+		text: `${annotation.label} ${formatValue(annotation.value)}`,
+	};
 });
 ---
 

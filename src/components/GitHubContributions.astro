@@ -1,31 +1,49 @@
 ---
-import { githubContributionRows, githubContributionStartDate, githubContributionTotal } from "../data/githubContributions";
+import {
+	githubContributionRows,
+	githubContributionStartDate,
+	githubContributionTotal,
+} from "../data/githubContributions";
 
 const username = "7oMB2006";
-const monthNames = ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"];
+const monthNames = [
+	"一月",
+	"二月",
+	"三月",
+	"四月",
+	"五月",
+	"六月",
+	"七月",
+	"八月",
+	"九月",
+	"十月",
+	"十一月",
+	"十二月",
+];
 
 type ContributionCell = {
-    column: number;
-    row: number;
-    date: string;
-    level: number;
+	column: number;
+	row: number;
+	date: string;
+	level: number;
 };
 
 const toDateString = (offset: number) => {
-    const date = new Date(`${githubContributionStartDate}T00:00:00Z`);
-    date.setUTCDate(date.getUTCDate() + offset);
-    return date.toISOString().slice(0, 10);
+	const date = new Date(`${githubContributionStartDate}T00:00:00Z`);
+	date.setUTCDate(date.getUTCDate() + offset);
+	return date.toISOString().slice(0, 10);
 };
 
 const totalContributions = githubContributionTotal.toLocaleString("en-US");
 const columnCount = githubContributionRows[0].length;
-const cells: ContributionCell[] = githubContributionRows.flatMap((row, rowIndex) =>
-    [...row].map((level, column) => ({
-        column,
-        row: rowIndex,
-        date: toDateString(column * 7 + rowIndex),
-        level: Number(level),
-    })),
+const cells: ContributionCell[] = githubContributionRows.flatMap(
+	(row, rowIndex) =>
+		[...row].map((level, column) => ({
+			column,
+			row: rowIndex,
+			date: toDateString(column * 7 + rowIndex),
+			level: Number(level),
+		})),
 );
 const cellSize = 12;
 const cellGap = 4;
@@ -38,19 +56,19 @@ const svgWidth = Math.max(chartWidth, legendWidth + 12);
 const svgHeight = chartHeight + 18;
 
 const monthLabels = cells
-    .filter((cell) => cell.row === 0)
-    .reduce<{ month: number; column: number }[]>((labels, cell) => {
-        const month = Number(cell.date.slice(5, 7));
-        if (labels.at(-1)?.month !== month) {
-            labels.push({ month, column: cell.column });
-        }
-        return labels;
-    }, []);
+	.filter((cell) => cell.row === 0)
+	.reduce<{ month: number; column: number }[]>((labels, cell) => {
+		const month = Number(cell.date.slice(5, 7));
+		if (labels.at(-1)?.month !== month) {
+			labels.push({ month, column: cell.column });
+		}
+		return labels;
+	}, []);
 
 const renderedCells = cells.map((cell) => ({
-    ...cell,
-    x: chartLeft + cell.column * (cellSize + cellGap),
-    y: chartTop + cell.row * (cellSize + cellGap),
+	...cell,
+	x: chartLeft + cell.column * (cellSize + cellGap),
+	y: chartTop + cell.row * (cellSize + cellGap),
 }));
 ---
 
