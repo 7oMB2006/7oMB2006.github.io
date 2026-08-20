@@ -31,6 +31,30 @@ const secondFloorWallpapers = [
 		position: "center",
 		mobileSrc: "/images/second-floor/mobile/autumn.webp",
 	},
+	{
+		name: "是个专家",
+		category: "表情包",
+		src: "/images/second-floor/memes/expert.webp",
+		alt: "是个专家表情包",
+		position: "center",
+		desktopOnly: true,
+	},
+	{
+		name: "最好玩的手游",
+		category: "表情包",
+		src: "/images/second-floor/memes/best-mobile-game.webp",
+		alt: "最好玩的手游表情包",
+		position: "center",
+		desktopOnly: true,
+	},
+	{
+		name: "天才の陨落",
+		category: "表情包",
+		src: "/images/second-floor/memes/genius-fall.webp",
+		alt: "天才の陨落表情包",
+		position: "center",
+		desktopOnly: true,
+	},
 ];
 ---
 
@@ -46,9 +70,17 @@ const secondFloorWallpapers = [
         <div id="second-floor-wallpapers">
             {secondFloorWallpapers.map((wallpaper, index) => (
                 <div
-                    class:list={["second-floor-wallpaper", { "is-active": index === 0 }]}
+                    class:list={[
+                        "second-floor-wallpaper",
+                        {
+                            "is-active": index === 0,
+                            "second-floor-wallpaper-desktop-only": wallpaper.desktopOnly,
+                        },
+                    ]}
                     data-second-floor-wallpaper
                     data-wallpaper-name={wallpaper.name}
+                    data-wallpaper-category={wallpaper.category || ""}
+                    data-desktop-only={wallpaper.desktopOnly ? "true" : undefined}
                 >
                     <div class="second-floor-wallpaper-image second-floor-wallpaper-desktop">
                         <ImageWrapper
@@ -58,18 +90,21 @@ const secondFloorWallpapers = [
                             position={wallpaper.position}
                         />
                     </div>
-                    <div class="second-floor-wallpaper-image second-floor-wallpaper-mobile" aria-hidden="true">
-                        <ImageWrapper
-                            class="second-floor-wallpaper-media"
-                            src={wallpaper.mobileSrc}
-                            alt=""
-                        />
-                    </div>
+{wallpaper.mobileSrc && (
+                        <div class="second-floor-wallpaper-image second-floor-wallpaper-mobile" aria-hidden="true">
+                            <ImageWrapper
+                                class="second-floor-wallpaper-media"
+                                src={wallpaper.mobileSrc}
+                                alt=""
+                            />
+                        </div>
+                    )}
                 </div>
             ))}
         </div>
         <div class="second-floor-shade"></div>
         <div class="second-floor-caption">
+            <span id="second-floor-category" class="second-floor-category"></span>
             <span id="second-floor-title" class="second-floor-title">房间</span>
         </div>
     </section>
@@ -184,6 +219,10 @@ const secondFloorWallpapers = [
         display: none;
     }
 
+    .second-floor-wallpaper-desktop-only {
+        display: block;
+    }
+
     .second-floor-wallpaper {
         opacity: 0;
         transition: opacity 420ms ease;
@@ -214,7 +253,26 @@ const secondFloorWallpapers = [
         user-select: none;
     }
 
+    .second-floor-category {
+        color: rgb(255 255 255 / 0.68);
+        font-size: clamp(1.4rem, 3vw, 2.6rem);
+        font-weight: 500;
+        letter-spacing: 0.04em;
+    }
+
+    .second-floor-category:empty {
+        display: none;
+    }
+
     .second-floor-title {
+        color: rgb(255 255 255 / 0.6);
+        font-size: 0.9rem;
+        font-weight: 500;
+        letter-spacing: 0.08em;
+    }
+
+    .second-floor-category:empty + .second-floor-title {
+        color: rgb(255 255 255 / 0.9);
         font-size: clamp(1.25rem, 2.5vw, 2rem);
         font-weight: 700;
         letter-spacing: 0.12em;
@@ -269,7 +327,19 @@ const secondFloorWallpapers = [
             left: 1rem;
         }
 
+        .second-floor-wallpaper-desktop-only {
+            display: none;
+        }
+
+        .second-floor-category {
+            font-size: 1.45rem;
+        }
+
         .second-floor-title {
+            font-size: 0.8rem;
+        }
+
+        .second-floor-category:empty + .second-floor-title {
             font-size: 1.15rem;
         }
 
@@ -317,28 +387,51 @@ const secondFloorWallpapers = [
     const wallpaperElements = Array.from(
         document.querySelectorAll<HTMLElement>("[data-second-floor-wallpaper]"),
     );
+    const wallpaperCategory = document.getElementById("second-floor-category");
     const wallpaperTitle = document.getElementById("second-floor-title");
     let wallpaperIndex = 0;
 
-    const setWallpaper = (index: number) => {
-        if (wallpaperElements.length === 0) return;
+    const isWallpaperAvailable = (element: HTMLElement) =>
+        !element.dataset.desktopOnly || isDesktop();
 
-        wallpaperIndex = (index + wallpaperElements.length) % wallpaperElements.length;
-        wallpaperElements.forEach((element, elementIndex) => {
-            element.classList.toggle("is-active", elementIndex === wallpaperIndex);
+    const setWallpaper = (index: number) => {
+        const availableWallpapers = wallpaperElements.filter(isWallpaperAvailable);
+        if (availableWallpapers.length === 0) return;
+
+        const requestedWallpaper = wallpaperElements[(index + wallpaperElements.length) % wallpaperElements.length];
+        const currentWallpaper = requestedWallpaper && isWallpaperAvailable(requestedWallpaper)
+            ? requestedWallpaper
+            : availableWallpapers[0];
+        wallpaperIndex = wallpaperElements.indexOf(currentWallpaper);
+
+        wallpaperElements.forEach((element) => {
+            element.classList.toggle("is-active", element === currentWallpaper);
         });
 
-        const currentWallpaper = wallpaperElements[wallpaperIndex];
-        if (wallpaperTitle && currentWallpaper) {
+        if (wallpaperCategory) {
+            wallpaperCategory.textContent = currentWallpaper.dataset.wallpaperCategory || "";
+        }
+        if (wallpaperTitle) {
             wallpaperTitle.textContent = currentWallpaper.dataset.wallpaperName || "";
         }
     };
 
     const cycleWallpaper = () => {
-        setWallpaper(wallpaperIndex + 1);
+        const availableWallpapers = wallpaperElements.filter(isWallpaperAvailable);
+        if (availableWallpapers.length === 0) return;
+
+        const currentAvailableIndex = availableWallpapers.indexOf(wallpaperElements[wallpaperIndex]);
+        const nextAvailableIndex = currentAvailableIndex < 0
+            ? 0
+            : (currentAvailableIndex + 1) % availableWallpapers.length;
+        setWallpaper(wallpaperElements.indexOf(availableWallpapers[nextAvailableIndex]));
     };
 
     document.getElementById("second-floor")?.addEventListener("click", cycleWallpaper);
+    setWallpaper(0);
+    window.matchMedia("(min-width: 1024px)").addEventListener("change", () => {
+        setWallpaper(wallpaperIndex);
+    });
 
     let state: FloorState = "idle";
     let armedAt = 0;
