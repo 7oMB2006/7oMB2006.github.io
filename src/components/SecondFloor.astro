@@ -84,7 +84,7 @@ const secondFloorWallpapers = [
                 >
                     <div class="second-floor-wallpaper-image second-floor-wallpaper-desktop">
                         <ImageWrapper
-                            class="second-floor-wallpaper-media"
+                            class={`second-floor-wallpaper-media${wallpaper.desktopOnly ? " second-floor-meme-media" : ""}`}
                             src={wallpaper.src}
                             alt={wallpaper.alt}
                             position={wallpaper.position}
@@ -221,6 +221,16 @@ const secondFloorWallpapers = [
 
     .second-floor-wallpaper-desktop-only {
         display: block;
+    }
+
+    .second-floor-wallpaper-desktop-only {
+        background-color: var(--page-bg);
+        transition: background-color 220ms ease;
+    }
+
+    #second-floor .second-floor-meme-media img {
+        object-fit: contain;
+        object-position: center top;
     }
 
     .second-floor-wallpaper {
