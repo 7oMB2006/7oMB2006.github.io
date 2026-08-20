@@ -208,6 +208,10 @@ const secondFloorWallpapers = [
         overscroll-behavior: none;
     }
 
+    body.second-floor-open #second-floor {
+        touch-action: none;
+    }
+
     body.second-floor-bounce #second-floor-prompt {
         animation: second-floor-prompt-bounce 360ms cubic-bezier(0.22, 1, 0.36, 1);
     }
@@ -225,8 +229,24 @@ const secondFloorWallpapers = [
     }
 
     @media (max-width: 1023px) {
-        #second-floor-ui {
-            display: none;
+        #second-floor-prompt {
+            top: calc(env(safe-area-inset-top) + 4.75rem);
+            font-size: 0.75rem;
+        }
+
+        #second-floor-entry-tip {
+            bottom: calc(env(safe-area-inset-bottom) + 1.25rem);
+            max-width: calc(100vw - 2rem);
+            white-space: nowrap;
+        }
+
+        .second-floor-caption {
+            top: calc(env(safe-area-inset-top) + 1rem);
+            left: 1rem;
+        }
+
+        .second-floor-title {
+            font-size: 1.15rem;
         }
     }
 
@@ -247,10 +267,12 @@ const secondFloorWallpapers = [
 
     const ARM_WINDOW = 1200;
     const WHEEL_GESTURE_GAP = 180;
+    const TOUCH_SWIPE_THRESHOLD = 48;
     const BOUNCE_DURATION = 360;
     const CLOSE_DURATION = 520;
 
     const isDesktop = () => window.matchMedia("(min-width: 1024px)").matches;
+    const isMobile = () => !isDesktop();
     const isHome = () => document.body.classList.contains("lg:is-home");
     const getScrollTop = () => {
         const viewport = document.querySelector<HTMLElement>(".os-viewport");
@@ -289,6 +311,9 @@ const secondFloorWallpapers = [
     let state: FloorState = "idle";
     let armedAt = 0;
     let lastWheelAt = 0;
+    let touchStartY = 0;
+    let touchCurrentY = 0;
+    let touchTracking = false;
     let armTimer: number | undefined;
     let bounceTimer: number | undefined;
     let closeTimer: number | undefined;
@@ -315,6 +340,9 @@ const secondFloorWallpapers = [
         state = "idle";
         armedAt = 0;
         lastWheelAt = 0;
+        touchStartY = 0;
+        touchCurrentY = 0;
+        touchTracking = false;
         clearFloorClasses();
     };
 
@@ -395,7 +423,80 @@ const secondFloorWallpapers = [
         }
     };
 
+    const handleTouchStart = (event: TouchEvent) => {
+        if (!isMobile() || !isHome()) {
+            if (state !== "idle") reset();
+            return;
+        }
+
+        if (event.touches.length !== 1) {
+            touchTracking = false;
+            return;
+        }
+
+        touchStartY = event.touches[0].clientY;
+        touchCurrentY = touchStartY;
+        touchTracking = true;
+    };
+
+    const handleTouchMove = (event: TouchEvent) => {
+        if (!touchTracking || event.touches.length !== 1) return;
+
+        touchCurrentY = event.touches[0].clientY;
+        const deltaY = touchStartY - touchCurrentY;
+        if (!isMobile() || !isHome()) return;
+
+        if (
+            state === "open" ||
+            state === "opening" ||
+            state === "closing" ||
+            (getScrollTop() <= 2 && deltaY > 8)
+        ) {
+            event.preventDefault();
+        }
+    };
+
+    const handleTouchEnd = () => {
+        if (!touchTracking) return;
+
+        const deltaY = touchStartY - touchCurrentY;
+        touchStartY = 0;
+        touchCurrentY = 0;
+        touchTracking = false;
+
+        if (!isMobile() || !isHome()) {
+            if (state !== "idle") reset();
+            return;
+        }
+
+        if (Math.abs(deltaY) < TOUCH_SWIPE_THRESHOLD) return;
+
+        const now = performance.now();
+        if (state === "open" || state === "opening") {
+            if (deltaY < -TOUCH_SWIPE_THRESHOLD) close();
+            return;
+        }
+
+        if (state === "closing") return;
+        if (getScrollTop() > 2) {
+            if (state !== "idle") reset();
+            return;
+        }
+
+        if (deltaY <= TOUCH_SWIPE_THRESHOLD) return;
+
+        if (state === "armed" && now - armedAt <= ARM_WINDOW) {
+            open();
+        } else {
+            arm();
+        }
+    };
+
     window.addEventListener("wheel", handleWheel, { capture: true, passive: false });
+    window.addEventListener("touchstart", handleTouchStart, { capture: true, passive: true });
+    window.addEventListener("touchmove", handleTouchMove, { capture: true, passive: false });
+    window.addEventListener("touchend", handleTouchEnd, { capture: true, passive: true });
+    window.addEventListener("touchcancel", handleTouchEnd, { capture: true, passive: true });
     window.addEventListener("keydown", (event) => {
         if (event.key === "Escape") close();
     });
