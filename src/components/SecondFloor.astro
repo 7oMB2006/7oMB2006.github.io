@@ -482,7 +482,7 @@ const secondFloorWallpapers = [
             state === "open" ||
             state === "opening" ||
             state === "closing" ||
-            (getScrollTop() <= 2 && deltaY > 8)
+            (getScrollTop() <= 2 && deltaY < -8)
         ) {
             event.preventDefault();
         }
@@ -505,7 +505,7 @@ const secondFloorWallpapers = [
 
         const now = performance.now();
         if (state === "open" || state === "opening") {
-            if (deltaY < -TOUCH_SWIPE_THRESHOLD) close();
+            if (deltaY > TOUCH_SWIPE_THRESHOLD) close();
             return;
         }
 
@@ -515,7 +515,7 @@ const secondFloorWallpapers = [
             return;
         }
 
-        if (deltaY <= TOUCH_SWIPE_THRESHOLD) return;
+        if (deltaY >= -TOUCH_SWIPE_THRESHOLD) return;
 
         if (state === "armed" && now - armedAt <= ARM_WINDOW) {
             open();
