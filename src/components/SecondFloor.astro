@@ -2,7 +2,18 @@
 import { siteConfig } from "../config";
 import ImageWrapper from "./misc/ImageWrapper.astro";
 
-const secondFloorWallpapers = [
+type SecondFloorWallpaper = {
+	name: string;
+	category?: string;
+	src: string;
+	alt: string;
+	position?: string;
+	mobileSrc?: string;
+	desktopOnly?: boolean;
+	meme?: boolean;
+};
+
+const secondFloorWallpapers: SecondFloorWallpaper[] = [
 	{
 		name: "房间",
 		src: siteConfig.banner.src,
