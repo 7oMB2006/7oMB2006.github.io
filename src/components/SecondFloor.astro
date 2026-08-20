@@ -8,24 +8,28 @@ const secondFloorWallpapers = [
 		src: siteConfig.banner.src,
 		alt: "房间壁纸",
 		position: siteConfig.banner.position,
+		mobileSrc: "/images/second-floor/mobile/room.webp",
 	},
 	{
 		name: "楼梯",
 		src: "/images/second-floor/stairs.png",
 		alt: "楼梯壁纸",
 		position: "center",
+		mobileSrc: "/images/second-floor/mobile/stairs.webp",
 	},
 	{
 		name: "林荫",
 		src: "/images/second-floor/grove.png",
 		alt: "林荫壁纸",
 		position: "center",
+		mobileSrc: "/images/second-floor/mobile/grove.webp",
 	},
 	{
 		name: "秋日",
 		src: "/images/second-floor/autumn.png",
 		alt: "秋日壁纸",
 		position: "center",
+		mobileSrc: "/images/second-floor/mobile/autumn.webp",
 	},
 ];
 ---
@@ -46,12 +50,21 @@ const secondFloorWallpapers = [
                     data-second-floor-wallpaper
                     data-wallpaper-name={wallpaper.name}
                 >
-                    <ImageWrapper
-                        class="second-floor-wallpaper-image"
-                        src={wallpaper.src}
-                        alt={wallpaper.alt}
-                        position={wallpaper.position}
-                    />
+                    <div class="second-floor-wallpaper-image second-floor-wallpaper-desktop">
+                        <ImageWrapper
+                            class="second-floor-wallpaper-media"
+                            src={wallpaper.src}
+                            alt={wallpaper.alt}
+                            position={wallpaper.position}
+                        />
+                    </div>
+                    <div class="second-floor-wallpaper-image second-floor-wallpaper-mobile" aria-hidden="true">
+                        <ImageWrapper
+                            class="second-floor-wallpaper-media"
+                            src={wallpaper.mobileSrc}
+                            alt=""
+                        />
+                    </div>
                 </div>
             ))}
         </div>
@@ -160,6 +173,17 @@ const secondFloorWallpapers = [
         height: 100%;
     }
 
+    #second-floor .second-floor-wallpaper-media {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    .second-floor-wallpaper-mobile {
+        display: none;
+    }
+
     .second-floor-wallpaper {
         opacity: 0;
         transition: opacity 420ms ease;
@@ -247,6 +271,14 @@ const secondFloorWallpapers = [
 
         .second-floor-title {
             font-size: 1.15rem;
+        }
+
+        .second-floor-wallpaper-desktop {
+            display: none;
+        }
+
+        .second-floor-wallpaper-mobile {
+            display: block;
         }
     }
 
