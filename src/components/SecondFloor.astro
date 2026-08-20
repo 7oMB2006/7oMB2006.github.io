@@ -37,7 +37,8 @@ const secondFloorWallpapers = [
 		src: "/images/second-floor/memes/expert.webp",
 		alt: "是个专家表情包",
 		position: "center",
-		desktopOnly: true,
+		mobileSrc: "/images/second-floor/memes/expert.webp",
+		meme: true,
 	},
 	{
 		name: "最好玩的手游",
@@ -45,7 +46,8 @@ const secondFloorWallpapers = [
 		src: "/images/second-floor/memes/best-mobile-game.webp",
 		alt: "最好玩的手游表情包",
 		position: "center",
-		desktopOnly: true,
+		mobileSrc: "/images/second-floor/memes/best-mobile-game.webp",
+		meme: true,
 	},
 	{
 		name: "天才の陨落",
@@ -53,7 +55,8 @@ const secondFloorWallpapers = [
 		src: "/images/second-floor/memes/genius-fall.webp",
 		alt: "天才の陨落表情包",
 		position: "center",
-		desktopOnly: true,
+		mobileSrc: "/images/second-floor/memes/genius-fall.webp",
+		meme: true,
 	},
 ];
 ---
@@ -84,7 +87,7 @@ const secondFloorWallpapers = [
                 >
                     <div class="second-floor-wallpaper-image second-floor-wallpaper-desktop">
                         <ImageWrapper
-                            class={`second-floor-wallpaper-media${wallpaper.desktopOnly ? " second-floor-meme-media" : ""}`}
+                            class={`second-floor-wallpaper-media${wallpaper.meme ? " second-floor-meme-media" : ""}`}
                             src={wallpaper.src}
                             alt={wallpaper.alt}
                             position={wallpaper.position}
@@ -93,7 +96,7 @@ const secondFloorWallpapers = [
 {wallpaper.mobileSrc && (
                         <div class="second-floor-wallpaper-image second-floor-wallpaper-mobile" aria-hidden="true">
                             <ImageWrapper
-                                class="second-floor-wallpaper-media"
+                                class={`second-floor-wallpaper-media${wallpaper.meme ? " second-floor-meme-media" : ""}`}
                                 src={wallpaper.mobileSrc}
                                 alt=""
                             />
@@ -224,6 +227,11 @@ const secondFloorWallpapers = [
     }
 
     .second-floor-wallpaper-desktop-only {
+        background-color: var(--page-bg);
+        transition: background-color 220ms ease;
+    }
+
+    #second-floor .second-floor-meme-media {
         background-color: var(--page-bg);
         transition: background-color 220ms ease;
     }
