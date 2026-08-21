@@ -2,7 +2,7 @@
 title: Checkpoint
 published: 2026-08-19
 description: 这是我的第一篇博客文章
-tags: [随笔]
+tags: [随笔, checkpoint]
 category: 随笔
 draft: false
 ---
