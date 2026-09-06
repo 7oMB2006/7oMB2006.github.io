@@ -13,31 +13,41 @@ export function rehypeBilibiliMetadata() {
 			if (node.tagName === "bilibili") nodes.push(node);
 		});
 
-		await Promise.all(nodes.map(async (node) => {
-			const properties = node.properties || {};
-			const bvid = String(properties.bvid || extractBilibiliVideoId(properties.url) || "");
-			if (!bvid) return;
+		await Promise.all(
+			nodes.map(async (node) => {
+				const properties = node.properties || {};
+				const bvid = String(
+					properties.bvid || extractBilibiliVideoId(properties.url) || "",
+				);
+				if (!bvid) return;
 
-			node.properties = { ...properties, bvid };
-			const metadata = await loadMetadata(bvid);
-			if (!metadata) return;
+				node.properties = { ...properties, bvid };
+				const metadata = await loadMetadata(bvid);
+				if (!metadata) return;
 
-			const owner = metadata.owner && typeof metadata.owner === "object" ? metadata.owner : {};
-			const stat = metadata.stat && typeof metadata.stat === "object" ? metadata.stat : {};
-			node.properties = {
-				...node.properties,
-				title: properties.title || metadata.title || "",
-				cover: properties.cover || normalizeBilibiliCoverUrl(metadata.pic),
-				owner: properties.owner || owner.name || "",
-				pubdate: properties.pubdate || metadata.pubdate || "",
-				description: properties.description || metadata.desc || "",
-				duration: properties.duration || metadata.duration || "",
-				view: properties.view || stat.view || "",
-				like: properties.like || stat.like || "",
-				coin: properties.coin || stat.coin || "",
-				favorite: properties.favorite || stat.favorite || "",
-			};
-		}));
+				const owner =
+					metadata.owner && typeof metadata.owner === "object"
+						? metadata.owner
+						: {};
+				const stat =
+					metadata.stat && typeof metadata.stat === "object"
+						? metadata.stat
+						: {};
+				node.properties = {
+					...node.properties,
+					title: properties.title || metadata.title || "",
+					cover: properties.cover || normalizeBilibiliCoverUrl(metadata.pic),
+					owner: properties.owner || owner.name || "",
+					pubdate: properties.pubdate || metadata.pubdate || "",
+					description: properties.description || metadata.desc || "",
+					duration: properties.duration || metadata.duration || "",
+					view: properties.view || stat.view || "",
+					like: properties.like || stat.like || "",
+					coin: properties.coin || stat.coin || "",
+					favorite: properties.favorite || stat.favorite || "",
+				};
+			}),
+		);
 	};
 }
 

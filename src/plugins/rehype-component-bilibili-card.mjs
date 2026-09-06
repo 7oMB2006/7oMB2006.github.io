@@ -10,12 +10,14 @@ import {
 export function BilibiliCardComponent(properties, children) {
 	if (Array.isArray(children) && children.length !== 0) {
 		return h("div", { class: "hidden" }, [
-			'Invalid directive. ("bilibili" directive must be leaf type "::bilibili{url=\"...\"}")',
+			'Invalid directive. ("bilibili" directive must be leaf type "::bilibili{url="..."}")',
 		]);
 	}
 
 	const sourceUrl = typeof properties.url === "string" ? properties.url : "";
-	const bvid = String(properties.bvid || extractBilibiliVideoId(sourceUrl) || "");
+	const bvid = String(
+		properties.bvid || extractBilibiliVideoId(sourceUrl) || "",
+	);
 	if (!bvid) {
 		return h("div", { class: "hidden" }, "Invalid Bilibili video URL.");
 	}
@@ -47,24 +49,39 @@ export function BilibiliCardComponent(properties, children) {
 				}),
 				h("span", { class: "bc-duration" }, duration),
 			]
-		: [h("div", { class: "bc-cover-placeholder" }, [h("span", { class: "bc-cover-mark" }, "B")])];
+		: [
+				h("div", { class: "bc-cover-placeholder" }, [
+					h("span", { class: "bc-cover-mark" }, "B"),
+				]),
+			];
 
 	const metadataChildren = [];
 	if (owner || published) {
 		metadataChildren.push(
-			h("div", { class: "bc-meta" }, [
-				owner ? h("span", { class: "bc-owner" }, owner) : null,
-				owner && published ? h("span", { class: "bc-meta-divider" }, "·") : null,
-				published ? h("time", { datetime: published }, published) : null,
-			].filter(Boolean)),
+			h(
+				"div",
+				{ class: "bc-meta" },
+				[
+					owner ? h("span", { class: "bc-owner" }, owner) : null,
+					owner && published
+						? h("span", { class: "bc-meta-divider" }, "·")
+						: null,
+					published ? h("time", { datetime: published }, published) : null,
+				].filter(Boolean),
+			),
 		);
 	}
-	if (description) metadataChildren.push(h("p", { class: "bc-description" }, description));
+	if (description)
+		metadataChildren.push(h("p", { class: "bc-description" }, description));
 	if (stats.length > 0) {
 		metadataChildren.push(
 			h("div", { class: "bc-stats" }, [
 				...stats.map(([className, label, value]) =>
-					h("span", { class: `bc-stat ${className}` }, `${label} ${formatBilibiliCount(value)}`),
+					h(
+						"span",
+						{ class: `bc-stat ${className}` },
+						`${label} ${formatBilibiliCount(value)}`,
+					),
 				),
 				h("span", { class: "bc-stat bc-stat-duration" }, duration),
 			]),
@@ -94,4 +111,3 @@ export function BilibiliCardComponent(properties, children) {
 		],
 	);
 }
-

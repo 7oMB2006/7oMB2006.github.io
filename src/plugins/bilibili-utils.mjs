@@ -5,9 +5,14 @@ export function extractBilibiliVideoId(value) {
 	return match?.[1] || "";
 }
 
-export function normalizeBilibiliUrl(value, bvid = extractBilibiliVideoId(value)) {
+export function normalizeBilibiliUrl(
+	value,
+	bvid = extractBilibiliVideoId(value),
+) {
 	if (typeof value === "string" && value.trim()) return value.trim();
-	return bvid ? `https://www.bilibili.com/video/${bvid}/` : "https://www.bilibili.com/";
+	return bvid
+		? `https://www.bilibili.com/video/${bvid}/`
+		: "https://www.bilibili.com/";
 }
 
 export function normalizeBilibiliCoverUrl(value) {
@@ -15,7 +20,8 @@ export function normalizeBilibiliCoverUrl(value) {
 
 	const coverUrl = value.trim();
 	if (coverUrl.startsWith("//")) return `https:${coverUrl}`;
-	if (coverUrl.startsWith("http://")) return `https://${coverUrl.slice("http://".length)}`;
+	if (coverUrl.startsWith("http://"))
+		return `https://${coverUrl.slice("http://".length)}`;
 	return coverUrl;
 }
 
@@ -34,7 +40,8 @@ export function formatBilibiliDuration(value) {
 	const hours = Math.floor(totalSeconds / 3600);
 	const minutes = Math.floor((totalSeconds % 3600) / 60);
 	const seconds = totalSeconds % 60;
-	if (hours > 0) return `${hours}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+	if (hours > 0)
+		return `${hours}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
 	return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
 }
 
