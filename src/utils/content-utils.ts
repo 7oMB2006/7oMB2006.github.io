@@ -20,7 +20,9 @@ async function getRawSortedPosts() {
 	const sorted = allBlogPosts.sort((a, b) => {
 		const dateA = new Date(a.data.published);
 		const dateB = new Date(b.data.published);
-		return dateA > dateB ? -1 : 1;
+		const dateDifference = dateB.getTime() - dateA.getTime();
+		if (dateDifference !== 0) return dateDifference;
+		return b.slug.localeCompare(a.slug, undefined, { numeric: true });
 	});
 	return sorted;
 }

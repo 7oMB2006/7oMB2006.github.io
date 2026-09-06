@@ -2,8 +2,8 @@
 title: 做了个主页二楼进壁纸的功能
 published: 2026-08-20
 description: 以后就能把图片丢进去了
-tags: [Blog, 更新日志]
-category: 更新日志
+tags: [Blog, 志新]
+category: 志新
 draft: false
 ---
 
