@@ -243,3 +243,189 @@ a.card-github.fetch-error
   transition-property: all
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1)
   transition-duration: 0.15s
+
+
+a.card-bilibili
+  display: grid
+  grid-template-columns: minmax(15rem, 0.95fr) minmax(0, 1.05fr)
+  gap: 1rem
+  margin: 1rem 0
+  padding: 0.75rem
+  overflow: hidden
+  color: var(--tw-prose-body)
+  background: var(--license-block-bg)
+  border: 1px solid var(--line-divider)
+  border-radius: var(--radius-large)
+  text-decoration: none
+  transition-property: background-color, border-color, transform, box-shadow
+  transition-duration: 0.2s
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1)
+
+  &:hover
+    color: var(--tw-prose-body)
+    background: var(--btn-regular-bg-hover)
+    border-color: var(--primary)
+    box-shadow: 0 0.75rem 2rem black(0.08)
+
+    .bc-cover
+      transform: scale(1.03)
+
+  &:active
+    transform: scale(0.99)
+    background: var(--btn-regular-bg-active)
+
+  .bc-cover-wrap
+    position: relative
+    min-width: 0
+    overflow: hidden
+    aspect-ratio: 16 / 9
+    align-self: center
+    background: var(--btn-regular-bg)
+    border-radius: calc(var(--radius-large) - 0.25rem)
+
+  .bc-cover
+    display: block
+    width: 100%
+    height: 100%
+    object-fit: cover
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1)
+
+  .bc-cover-placeholder
+    display: grid
+    place-items: center
+    width: 100%
+    height: 100%
+    color: var(--primary)
+    background: var(--btn-regular-bg)
+
+  .bc-cover-mark
+    display: grid
+    place-items: center
+    width: 3rem
+    height: 3rem
+    font-size: 2rem
+    font-weight: 700
+    color: white
+    background: #fb7299
+    border-radius: 1rem
+
+  .bc-duration
+    position: absolute
+    right: 0.65rem
+    bottom: 0.55rem
+    padding: 0.15rem 0.4rem
+    color: white
+    background: black(0.68)
+    border-radius: 0.35rem
+    font-family: 'JetBrains Mono Variable', ui-monospace, monospace
+    font-size: 0.75rem
+    line-height: 1.2
+
+  .bc-content
+    display: flex
+    min-width: 0
+    flex-direction: column
+    justify-content: center
+    padding: 0.15rem 0.35rem 0.15rem 0
+
+  .bc-brand
+    display: flex
+    align-items: center
+    gap: 0.4rem
+    margin-bottom: 0.45rem
+    color: #fb7299
+    font-size: 0.78rem
+    font-weight: 700
+    letter-spacing: 0.02em
+
+  .bc-brand-mark
+    display: inline-grid
+    place-items: center
+    width: 1.25rem
+    height: 1.25rem
+    color: white
+    background: #fb7299
+    border-radius: 0.35rem
+    font-size: 0.85rem
+    line-height: 1
+
+  .bc-title
+    display: -webkit-box
+    margin-bottom: 0.55rem
+    overflow: hidden
+    color: var(--tw-prose-headings)
+    font-size: clamp(1.05rem, 2vw, 1.35rem)
+    font-weight: 700
+    line-height: 1.35
+    -webkit-box-orient: vertical
+    -webkit-line-clamp: 2
+
+  .bc-meta
+    display: flex
+    flex-wrap: wrap
+    gap: 0.4rem
+    margin-bottom: 0.55rem
+    color: var(--tw-prose-body)
+    font-size: 0.82rem
+    opacity: 0.72
+
+  .bc-meta-divider
+    opacity: 0.5
+
+  .bc-description
+    display: -webkit-box
+    margin: 0 0 0.8rem
+    overflow: hidden
+    color: var(--tw-prose-body)
+    font-size: 0.9rem
+    line-height: 1.5
+    opacity: 0.82
+    -webkit-box-orient: vertical
+    -webkit-line-clamp: 3
+
+  .bc-stats
+    display: flex
+    flex-wrap: wrap
+    gap: 0.5rem 0.85rem
+    margin-top: auto
+    color: var(--tw-prose-body)
+    font-size: 0.78rem
+    opacity: 0.78
+
+  .bc-stat
+    display: inline-flex
+    align-items: center
+    gap: 0.28rem
+    white-space: nowrap
+
+    &:before
+      display: inline-grid
+      place-items: center
+      width: 0.9rem
+      height: 0.9rem
+      color: #fb7299
+      font-size: 0.78rem
+      font-weight: 700
+
+  .bc-stat-play:before
+    content: '▶'
+
+  .bc-stat-like:before
+    content: '♥'
+
+  .bc-stat-coin:before
+    content: 'ⓒ'
+
+  .bc-stat-favorite:before
+    content: '★'
+
+  .bc-stat-duration
+    margin-left: auto
+    font-family: 'JetBrains Mono Variable', ui-monospace, monospace
+
+@media (max-width: 640px)
+  a.card-bilibili
+    grid-template-columns: 1fr
+
+    .bc-content
+      padding: 0.15rem 0.25rem 0.35rem
