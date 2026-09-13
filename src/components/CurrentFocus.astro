@@ -3,10 +3,12 @@ const barCount = 50;
 const cellWidth = 11;
 const cellGap = 4;
 const barStart = 320;
+const rowGap = 62;
 const rows = [
-	{ label: "基于 AI 的金融量化", value: 50, color: "focus-red" },
-	{ label: "AI Agent", value: 48, color: "focus-coral" },
-	{ label: "AI 绘画", value: 2, color: "focus-mint" },
+	{ label: "基于 AI 的金融量化", value: 60, color: "focus-red" },
+	{ label: "AI Agent", value: 25, color: "focus-coral" },
+	{ label: "AIGC", value: 5, color: "focus-gold" },
+	{ label: "多方探路", value: 10, color: "focus-sky" },
 ];
 ---
 
@@ -20,7 +22,7 @@ const rows = [
             aria-labelledby="focus-title focus-description"
         >
             <title id="focus-title">当前精力投入</title>
-            <desc id="focus-description">基于 AI 的金融量化占 50%，AI Agent 占 48%，AI 绘画占 2%。</desc>
+            <desc id="focus-description">基于 AI 的金融量化占 60%，AI Agent 占 25%，AIGC 占 5%，多方探路占 10%。</desc>
 
             <rect class="chart-bg" width="1200" height="430" rx="18" />
             <rect class="chart-border" x="1" y="1" width="1198" height="428" rx="17" />
@@ -38,8 +40,10 @@ const rows = [
             />
 
             {rows.map((row, rowIndex) => {
-                const y = 163 + rowIndex * 74;
-                const filledCells = Math.round((row.value / 100) * barCount);
+                const y = 163 + rowIndex * rowGap;
+                const filledCells = (row.value / 100) * barCount;
+                const fullCells = Math.floor(filledCells);
+                const partialFill = filledCells - fullCells;
                 return (
                     <g>
                         <text x="56" y={y + 18} class="focus-label">{row.label}</text>
@@ -50,9 +54,19 @@ const rows = [
                                 width={cellWidth}
                                 height="26"
                                 rx="4"
-                                class:list={["focus-cell", index < filledCells && row.color]}
+                                class:list={["focus-cell", index < fullCells && row.color]}
                             />
                         ))}
+                        {partialFill > 0 && (
+                            <rect
+                                x={barStart + fullCells * (cellWidth + cellGap)}
+                                y={y}
+                                width={cellWidth * partialFill}
+                                height="26"
+                                rx="2"
+                                class={row.color}
+                            />
+                        )}
                         <text x="1144" y={y + 20} class:list={["focus-value", row.color]} text-anchor="end">{row.value}%</text>
                     </g>
                 );
@@ -140,7 +154,11 @@ const rows = [
         fill: #e78378;
     }
 
-    .focus-mint {
-        fill: #9ad3bd;
+    .focus-gold {
+        fill: #d3a442;
+    }
+
+    .focus-sky {
+        fill: #6aa9d8;
     }
 </style>
