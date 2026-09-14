@@ -9,8 +9,6 @@ category: 技术
 draft: false
 ---
 
-![Codex thread read 会话示例](/images/posts/codex-thread-read-overview.png)
-
 ## 一般为什么用
 
 `thread read` 是 Codex 原生提供的工具集。它可以让 Agent 阅读其他线程的会话，也可以向其他线程发送消息，就像两个员工之间的交流一样。
