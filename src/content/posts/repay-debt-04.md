@@ -2,7 +2,7 @@
 title: 还债 04
 published: 2026-09-19
 showImageOnPost: false
-description: 占位
+description: “享受了超前的收益就要承担欠下认知债的风险”
 image: /images/posts/repay-debt-04-canva.png
 tags: [还债, 技术]
 category: 还债
