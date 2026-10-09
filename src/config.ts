@@ -31,19 +31,19 @@ export const siteConfig: SiteConfig = {
 	},
 	favicon: [
 		{
-			src: "/favicon/avatar-favicon-32.png",
+			src: "/favicon/avatar-favicon-32.png?v=20261010",
 			sizes: "32x32",
 		},
 		{
-			src: "/favicon/avatar-favicon-128.png",
+			src: "/favicon/avatar-favicon-128.png?v=20261010",
 			sizes: "128x128",
 		},
 		{
-			src: "/favicon/avatar-favicon-180.png",
+			src: "/favicon/avatar-favicon-180.png?v=20261010",
 			sizes: "180x180",
 		},
 		{
-			src: "/favicon/avatar-favicon-192.png",
+			src: "/favicon/avatar-favicon-192.png?v=20261010",
 			sizes: "192x192",
 		},
 	],
