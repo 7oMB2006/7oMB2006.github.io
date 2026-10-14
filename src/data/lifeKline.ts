@@ -6,7 +6,7 @@ export type LifeKline = {
 	close: number;
 };
 
-export const lifeKlineUpdatedAt = "2026-10-14";
+export const lifeKlineUpdatedAt = "2026-10-15";
 
 export const lifeKlineData: LifeKline[] = [
 	{ date: "2026-06-03", open: 100, high: 100, low: 93, close: 97 },
@@ -555,5 +555,12 @@ export const lifeKlineData: LifeKline[] = [
 		high: 719.08,
 		low: 672.04,
 		close: 698.92,
+	},
+	{
+		date: "2026-10-14",
+		open: 698.92,
+		high: 747.84,
+		low: 670.96,
+		close: 733.87,
 	},
 ];
