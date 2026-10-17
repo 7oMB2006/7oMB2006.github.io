@@ -6,7 +6,7 @@ export type LifeKline = {
 	close: number;
 };
 
-export const lifeKlineUpdatedAt = "2026-10-15";
+export const lifeKlineUpdatedAt = "2026-10-17";
 
 export const lifeKlineData: LifeKline[] = [
 	{ date: "2026-06-03", open: 100, high: 100, low: 93, close: 97 },
@@ -500,20 +500,8 @@ export const lifeKlineData: LifeKline[] = [
 		low: 455.94,
 		close: 469.62,
 	},
-	{
-		date: "2026-10-06",
-		open: 469.62,
-		high: 488.4,
-		low: 469.62,
-		close: 488.4,
-	},
-	{
-		date: "2026-10-07",
-		open: 488.4,
-		high: 512.82,
-		low: 488.4,
-		close: 512.82,
-	},
+	{ date: "2026-10-06", open: 469.62, high: 488.4, low: 469.62, close: 488.4 },
+	{ date: "2026-10-07", open: 488.4, high: 512.82, low: 488.4, close: 512.82 },
 	{
 		date: "2026-10-08",
 		open: 512.82,
@@ -521,13 +509,7 @@ export const lifeKlineData: LifeKline[] = [
 		low: 512.82,
 		close: 553.85,
 	},
-	{
-		date: "2026-10-09",
-		open: 553.85,
-		high: 576,
-		low: 553.85,
-		close: 559.39,
-	},
+	{ date: "2026-10-09", open: 553.85, high: 576, low: 553.85, close: 559.39 },
 	{
 		date: "2026-10-10",
 		open: 559.39,
@@ -562,5 +544,26 @@ export const lifeKlineData: LifeKline[] = [
 		high: 747.84,
 		low: 670.96,
 		close: 733.87,
+	},
+	{
+		date: "2026-10-15",
+		open: 733.87,
+		high: 785.24,
+		low: 733.87,
+		close: 741.21,
+	},
+	{
+		date: "2026-10-16",
+		open: 741.21,
+		high: 815.33,
+		low: 704.15,
+		close: 815.33,
+	},
+	{
+		date: "2026-10-17",
+		open: 815.33,
+		high: 839.79,
+		low: 815.33,
+		close: 839.79,
 	},
 ];
