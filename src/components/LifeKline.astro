@@ -112,7 +112,11 @@ const annotations = [
                 const yClose = yPosition(day.close);
                 const bodyTop = Math.min(yOpen, yClose);
                 const bodyHeight = Math.max(Math.abs(yOpen - yClose), 3);
-                const directionClass = day.close >= day.open ? "kline-up" : "kline-down";
+                const directionClass = day.close > day.open
+                    ? "kline-up"
+                    : day.close < day.open
+                        ? "kline-down"
+                        : "kline-flat";
 
                 return (
                     <g>
@@ -247,5 +251,10 @@ const annotations = [
     .kline-down {
         stroke: #67c49a;
         fill: #67c49a;
+    }
+
+    .kline-flat {
+        stroke: #f2f2f2;
+        fill: #f2f2f2;
     }
 </style>
