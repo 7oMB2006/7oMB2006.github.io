@@ -672,7 +672,25 @@ export const lifeKlineData: LifeKline[] = [
 		low: 787.39,
 		close: 787.39,
 	},
-	{ date: "2026-11-03", open: 787.39, high: 803.14, low: 787.39, close: 803.14 },
-	{ date: "2026-11-04", open: 803.14, high: 803.14, low: 771.01, close: 787.08 },
-	{ date: "2026-11-05", open: 787.08, high: 794.95, low: 763.47, close: 794.95 },
+	{
+		date: "2026-11-03",
+		open: 787.39,
+		high: 803.14,
+		low: 787.39,
+		close: 803.14,
+	},
+	{
+		date: "2026-11-04",
+		open: 803.14,
+		high: 803.14,
+		low: 771.01,
+		close: 787.08,
+	},
+	{
+		date: "2026-11-05",
+		open: 787.08,
+		high: 794.95,
+		low: 763.47,
+		close: 794.95,
+	},
 ];
