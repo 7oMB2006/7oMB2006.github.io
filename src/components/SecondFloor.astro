@@ -1,5 +1,4 @@
 ---
-import { siteConfig } from "../config";
 import ImageWrapper from "./misc/ImageWrapper.astro";
 
 type SecondFloorWallpaper = {
@@ -15,89 +14,23 @@ type SecondFloorWallpaper = {
 
 const secondFloorWallpapers: SecondFloorWallpaper[] = [
 	{
-		name: "房间",
-		src: siteConfig.banner.src,
-		alt: "房间壁纸",
-		position: siteConfig.banner.position,
-		mobileSrc: "/images/second-floor/mobile/room.webp",
-	},
-	{
-		name: "楼梯",
-		src: "/images/second-floor/stairs.png",
-		alt: "楼梯壁纸",
-		position: "center",
-		mobileSrc: "/images/second-floor/mobile/stairs.webp",
-	},
-	{
-		name: "河堤",
-		src: "/images/second-floor/riverbank.png",
-		alt: "河堤壁纸",
-		position: "center",
-		mobileSrc: "/images/second-floor/riverbank.png",
-	},
-	{
-		name: "林荫",
-		src: "/images/second-floor/grove.png",
-		alt: "林荫壁纸",
-		position: "center",
-		mobileSrc: "/images/second-floor/mobile/grove.webp",
-	},
-	{
-		name: "秋日",
-		src: "/images/second-floor/autumn.png",
-		alt: "秋日壁纸",
-		position: "center",
-		mobileSrc: "/images/second-floor/mobile/autumn.webp",
-	},
-	{
-		name: "教室",
-		src: "/images/second-floor/classroom.png",
-		alt: "教室壁纸",
-		position: "center",
-		mobileSrc: "/images/second-floor/classroom.png",
-	},
-	{
-		name: "车窗",
-		src: "/images/second-floor/window.png",
-		alt: "车窗壁纸",
-		position: "center",
-		mobileSrc: "/images/second-floor/window.png",
-	},
-	{
-		name: "是个专家",
-		category: "表情包",
-		src: "/images/second-floor/memes/expert.webp",
-		alt: "是个专家表情包",
-		position: "center",
-		mobileSrc: "/images/second-floor/memes/expert.webp",
-		meme: true,
-	},
-	{
-		name: "最好玩的手游",
-		category: "表情包",
-		src: "/images/second-floor/memes/best-mobile-game.webp",
-		alt: "最好玩的手游表情包",
-		position: "center",
-		mobileSrc: "/images/second-floor/memes/best-mobile-game.webp",
-		meme: true,
-	},
-	{
-		name: "天才の陨落",
-		category: "表情包",
-		src: "/images/second-floor/memes/genius-fall.webp",
-		alt: "天才の陨落表情包",
-		position: "center",
-		mobileSrc: "/images/second-floor/memes/genius-fall.webp",
-		meme: true,
+		name: "",
+		src: "/images/second-floor/wallpaper-20261115.jpg",
+		alt: "窗边插画",
+		position: "center top",
+		mobileSrc: "/images/second-floor/wallpaper-20261115.jpg",
 	},
 ];
+const hasWallpaperCaption = secondFloorWallpapers.some(
+	(wallpaper) => wallpaper.name || wallpaper.category,
+);
 ---
 
 <div id="second-floor-ui" aria-live="polite">
     <div id="second-floor-prompt" role="status">要继续滚动吗？</div>
 
     <div id="second-floor-entry-tip" role="status" aria-live="polite">
-        <span>点击切换</span>
+        {secondFloorWallpapers.length > 1 && <span>点击切换</span>}
         <span>下滑退出</span>
     </div>
 
@@ -138,10 +71,12 @@ const secondFloorWallpapers: SecondFloorWallpaper[] = [
             ))}
         </div>
         <div class="second-floor-shade"></div>
-        <div class="second-floor-caption">
-            <span id="second-floor-category" class="second-floor-category"></span>
-            <span id="second-floor-title" class="second-floor-title">房间</span>
-        </div>
+        {hasWallpaperCaption && (
+            <div class="second-floor-caption">
+                <span id="second-floor-category" class="second-floor-category"></span>
+                <span id="second-floor-title" class="second-floor-title"></span>
+            </div>
+        )}
     </section>
 </div>
 
